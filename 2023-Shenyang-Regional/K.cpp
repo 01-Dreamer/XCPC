@@ -80,25 +80,25 @@ signed main()
 
     auto check=[&](int mid)
     {
-        return query(mid,tr_sum)>=sum;
+        return query(mid,tr_sum)<=sum;
     };
 
     for(int i=0;i<q;i++)
     {
-        int x=Q[i].x,v=Q[i].v;
+        int x=Q[i].x,V=Q[i].v;
         if(w[x]>0)
         {
             add(m[w[x]],-1,tr_cnt);
             add(m[w[x]],-w[x],tr_sum);
         }
         else sum-=-w[x];
-        if(v>0)
+        if(V>0)
         {
-            add(m[v],1,tr_cnt);
-            add(m[v],v,tr_sum);
+            add(m[V],1,tr_cnt);
+            add(m[V],V,tr_sum);
         }
-        else sum+=-v;
-        w[x]=v;
+        else sum+=-V;
+        w[x]=V;
 
         if(query(sz,tr_sum)<=sum)
         {
@@ -109,23 +109,25 @@ signed main()
         int l=0,r=sz;
         while(l<r)
         {
-            int mid=l+r>>1;
-            if(check(mid)) r=mid;
-            else l=mid+1;
+            int mid=l+r+1>>1;
+            if(check(mid)) l=mid;
+            else r=mid-1;
         }
-        if(!r)
+        if(l==sz)
         {
-            cout<<1<<'\n';
+            cout<<query(sz,tr_cnt)+1<<'\n';
             continue;
         }
-        
-        int maxv=query(sz,tr_cnt);
-        int minv=maxv-query(r-1,tr_cnt);
-        int d=sum-query(r-1,tr_sum);
-        int tot=d/r;
-        minv-=tot;
-        cout<<maxv-minv+1<<'\n';
+
+        int cnt=query(l,tr_cnt);
+        int d=sum-query(l,tr_sum);
+
+        int val_next=v[l];
+        int cnt_next=query(l+1,tr_cnt)-query(l,tr_cnt);
+        int t=cnt+min(cnt_next,d/val_next);
+        cout<<t+1<<'\n';
     }
 
     return 0;
 }
+
